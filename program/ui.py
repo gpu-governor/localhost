@@ -1,14 +1,31 @@
 import tkinter as tk
+from core import * # this imports all functions from 
 
-# Create the main window
+
+# ============================ Create the main window ============================
 root = tk.Tk()
-root.title("Tkinter Window Background Color")
+root.title("imag3")
+root.minsize(640, 480) # Set the minimum window size
+root.geometry("800x600") # Set the window size
+root.resizable(True, True)  # Allow resizing
+root.configure(bg='#2d2d30') # Change the background color using configure (black gray background)
 
-# Set the window size
-root.geometry("400x300")
+#============================ Define the canvas size ============================
+canvas_width = 400
+canvas_height = 300
+square_size = 20  # Size of each square in the checkerboard
 
-# Change the background color using configure
-root.configure(bg='lightblue')
+# Create a Canvas widget
+canvas = tk.Canvas(root, width=canvas_width, height=canvas_height)
+canvas.pack()
 
-# Run the application
+# Create the checkerboard pattern
+create_checkerboard(canvas, canvas_width, canvas_height, square_size) # this function is in the core.py
+
+# ============================ Initial window size ============================
+get_window_size(root)  # Call this initially to print the size
+
+# Bind the resize event to the on_resize function
+root.bind("<Configure>", lambda event: on_resize(event, root))
+# ============================ Run the application ============================
 root.mainloop()
