@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import filedialog
+
 from core import * # this imports all functions from 
 
 
@@ -22,7 +24,12 @@ canvas.pack()
 # Create the checkerboard pattern
 create_checkerboard(canvas, canvas_width, canvas_height, square_size) # this function is in the core.py
 
-# ============================ Initial window size ============================
+# ============================  widgets ============================
+button_explore = tk.Button(root, text = "Browse Files", command = browseFiles) 
+button_explore.pack()
+
+
+# ============================  window size ============================
 get_window_size(root)  # Call this initially to print the size
 
 # Bind the resize event to the on_resize function
