@@ -8,7 +8,7 @@ class File():
 
     def newFile(self):
         self.filename = "Untitled"
-        self.text.delete(0.0, END)
+        self.img.delete(0.0, END)
 
     def saveFile(self):
         try:
@@ -48,12 +48,12 @@ class File():
 def main(root, text, menubar):
     filemenu = Menu(menubar)
     objFile = File(text, root)
-    filemenu.add_command(label="New", command=objFile.newFile)
-    filemenu.add_command(label="Open", command=objFile.openFile)
-    filemenu.add_command(label="Save", command=objFile.saveFile)
-    filemenu.add_command(label="Save As...", command=objFile.saveAs)
+    filemenu.add_command(label="New" )
+    filemenu.add_command(label="Open")
+    filemenu.add_command(label="Save")
+    filemenu.add_command(label="Save As...")
     filemenu.add_separator()
-    filemenu.add_command(label="Quit", command=objFile.quit)
+    filemenu.add_command(label="Quit")
     menubar.add_cascade(label="File", menu=filemenu)
     root.config(menu=menubar)
 

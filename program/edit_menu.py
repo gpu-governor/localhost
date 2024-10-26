@@ -57,14 +57,8 @@ def main(root, text, menubar):
     objEdit = Edit(text, root)
 
     editmenu = Menu(menubar)
-    editmenu.add_command(label="Copy", command=objEdit.copy, accelerator="Ctrl+C")
-    editmenu.add_command(label="Cut", command=objEdit.cut, accelerator="Ctrl+X")
-    editmenu.add_command(label="Paste", command=objEdit.paste, accelerator="Ctrl+V")
-    editmenu.add_command(label="Undo", command=objEdit.undo, accelerator="Ctrl+Z")
-    editmenu.add_command(label="Redo", command=objEdit.redo, accelerator="Ctrl+Y")
-    editmenu.add_command(label="Find", command=objEdit.find, accelerator="Ctrl+F")
-    editmenu.add_separator()
-    editmenu.add_command(label="Select All", command=objEdit.selectAll, accelerator="Ctrl+A")
+    editmenu.add_command(label="Undo",  accelerator="Ctrl+Z")
+    editmenu.add_command(label="Redo",  accelerator="Ctrl+Y")
     menubar.add_cascade(label="Edit", menu=editmenu)
 
     root.bind_all("<Control-z>", objEdit.undo)
@@ -79,7 +73,7 @@ def main(root, text, menubar):
     objEdit.rightClick.add_command(label="Select All", command=objEdit.selectAll)
     objEdit.rightClick.bind("<Control-q>", objEdit.selectAll)
 
-    text.bind("<Button-3>", objEdit.popup)
+    # text.bind("<Button-3>", objEdit.popup)
 
     root.config(menu=menubar)
 

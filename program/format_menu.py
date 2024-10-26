@@ -88,7 +88,7 @@ def main(root, text, menubar):
 
     fontoptions = families(root)
     font = Font(family="Arial", size=10)
-    text.configure(font=font)
+    # text.configure(font=font)
 
     formatMenu = Menu(menubar)
 
@@ -101,14 +101,8 @@ def main(root, text, menubar):
         ssubmenu.add_command(label=str(value), command=lambda value=value: font.configure(size=value))
 
     formatMenu.add_command(label="Change Background", command=objFormat.changeBg)
-    formatMenu.add_command(label="Change Font Color", command=objFormat.changeFg)
     formatMenu.add_cascade(label="Font", underline=0, menu=fsubmenu)
     formatMenu.add_cascade(label="Size", underline=0, menu=ssubmenu)
-    formatMenu.add_command(label="Bold", command=objFormat.bold, accelerator="Ctrl+B")
-    formatMenu.add_command(label="Italic", command=objFormat.italic, accelerator="Ctrl+I")
-    formatMenu.add_command(label="Underline", command=objFormat.underline, accelerator="Ctrl+U")
-    formatMenu.add_command(label="Overstrike", command=objFormat.overstrike, accelerator="Ctrl+T")
-    formatMenu.add_command(label="Add Date", command=objFormat.addDate)
     menubar.add_cascade(label="Format", menu=formatMenu)
 
     root.bind_all("<Control-b>", objFormat.bold)

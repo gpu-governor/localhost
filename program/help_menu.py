@@ -6,10 +6,10 @@ import sys
 class Help():
 
     def about(root):
-        showinfo(title="About", message="This a simple text editor implemented in Python's Tkinter")
+        showinfo(title="About", message="smart high resolution image manipulation program (SHRIMP) is an easy to use image editor built in python, opencv and tkinter. It is similiar to gimp")
 
 
-def main(root, text, menubar):
+def main(root, menubar):
 
     help = Help()
 
