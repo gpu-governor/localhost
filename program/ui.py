@@ -1,8 +1,10 @@
 import tkinter as tk
 from tkinter import filedialog
-
 from core import * # this imports all functions from 
-
+import file_menu
+import edit_menu
+import format_menu
+import help_menu
 
 # ============================ Create the main window ============================
 root = tk.Tk()
@@ -11,7 +13,14 @@ root.minsize(640, 480) # Set the minimum window size
 root.geometry("800x600") # Set the window size
 root.resizable(True, True)  # Allow resizing
 root.configure(bg='#2d2d30') # Change the background color using configure (black gray background)
+#======menu bar
+menubar = tk.Menu(root)
+text = 0
 
+file_menu.main(root, text, menubar)
+#edit_menu.main(root, text, menubar)
+#format_menu.main(root, text, menubar)
+#help_menu.main(root, text, menubar)
 #============================ Define the canvas size ============================
 canvas_width = 400
 canvas_height = 300
@@ -25,10 +34,9 @@ canvas.pack()
 create_checkerboard(canvas, canvas_width, canvas_height, square_size) # this function is in the core.py
 
 # ============================  widgets ============================
-button_explore = tk.Button(root, text = "Browse Files", command = browseFiles) 
-button_explore.pack()
 
-
+button_exit = tk.Button(menubar, text = "Exit", command = exit)
+button_exit.pack()
 # ============================  window size ============================
 get_window_size(root)  # Call this initially to print the size
 

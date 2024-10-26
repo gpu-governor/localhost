@@ -23,14 +23,3 @@ def create_checkerboard(canvas, width, height, square_size):
             canvas.create_rectangle(x, y, x + square_size, y + square_size, fill=color, outline="")
 
 # ============================ FILE SYSTEM  ============================
-def browseFiles():
-	filename = filedialog.askopenfilename(initialdir = "/",
-										title = "Select a File",
-										filetypes = (("Text files",
-														"*.txt*"),
-													("all files",
-														"*.*")))
-	
-	# Change label contents
-	label_file_explorer.configure(text="File Opened: "+filename)
-	
