@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 from core import * # this imports all functions from
-from cv import * 
+from file_menu import File
 import file_menu
 import edit_menu
 import format_menu
@@ -14,14 +14,6 @@ root.minsize(640, 480) # Set the minimum window size
 root.geometry("800x600") # Set the window size
 root.resizable(True, True)  # Allow resizing
 root.configure(bg='#2d2d30') # Change the background color using configure (black gray background)
-#=============================menu bar=============================
-menubar = tk.Menu(root)
-image = None
-
-file_menu.main(root, image, menubar) # 50%
-edit_menu.main(root, image, menubar) #10%
-format_menu.main(root, image, menubar) #10%
-help_menu.main(root, menubar) # 100%
 #============================ Define the canvas size ============================
 canvas_width = 500
 canvas_height = 400
@@ -33,6 +25,15 @@ canvas.place(x=10,y=10)
 
 # Create the checkerboard pattern
 create_checkerboard(canvas, canvas_width, canvas_height, square_size) # this function is in the core.py
+
+#=============================menu bar=============================
+menubar = tk.Menu(root)
+image = File(root, canvas)
+
+file_menu.main(root, image, menubar) # 50%
+edit_menu.main(root, image, menubar) #10%
+format_menu.main(root, image, menubar) #10%
+help_menu.main(root, menubar) # 100%
 
 # ============================  slide panel ============================
 # Create a sidebar frame

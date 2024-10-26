@@ -9,23 +9,6 @@ class Edit():
     def popup(self, event):
         self.rightClick.post(event.x_root, event.y_root)
 
-    def copy(self, *args):
-        sel = self.text.selection_get()
-        self.clipboard = sel
-
-    def cut(self, *args):
-        sel = self.text.selection_get()
-        self.clipboard = sel
-        self.text.delete(SEL_FIRST, SEL_LAST)
-
-    def paste(self, *args):
-        self.text.insert(INSERT, self.clipboard)
-
-    def selectAll(self, *args):
-        self.text.tag_add(SEL, "1.0", END)
-        self.text.mark_set(0.0, END)
-        self.text.see(INSERT)
-
     def undo(self, *args):
         self.text.edit_undo()
 
@@ -63,17 +46,7 @@ def main(root, text, menubar):
 
     root.bind_all("<Control-z>", objEdit.undo)
     root.bind_all("<Control-y>", objEdit.redo)
-    root.bind_all("<Control-f>", objEdit.find)
-    root.bind_all("Control-a", objEdit.selectAll)
 
-    objEdit.rightClick.add_command(label="Copy", command=objEdit.copy)
-    objEdit.rightClick.add_command(label="Cut", command=objEdit.cut)
-    objEdit.rightClick.add_command(label="Paste", command=objEdit.paste)
-    objEdit.rightClick.add_separator()
-    objEdit.rightClick.add_command(label="Select All", command=objEdit.selectAll)
-    objEdit.rightClick.bind("<Control-q>", objEdit.selectAll)
-
-    # text.bind("<Button-3>", objEdit.popup)
 
     root.config(menu=menubar)
 
