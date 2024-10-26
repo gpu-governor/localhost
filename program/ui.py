@@ -16,11 +16,11 @@ root.resizable(True, True)  # Allow resizing
 root.configure(bg='#2d2d30') # Change the background color using configure (black gray background)
 #=============================menu bar=============================
 menubar = tk.Menu(root)
-text = 0
+image = None
 
-file_menu.main(root, text, menubar) # 50%
-edit_menu.main(root, text, menubar) #10%
-format_menu.main(root, text, menubar) #10%
+file_menu.main(root, image, menubar) # 50%
+edit_menu.main(root, image, menubar) #10%
+format_menu.main(root, image, menubar) #10%
 help_menu.main(root, menubar) # 100%
 #============================ Define the canvas size ============================
 canvas_width = 500

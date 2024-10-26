@@ -1,1 +1,0 @@
-This project contains some modifications by n0n3m4 that are in a public domain, the rest is covered by LICENSE.orig
