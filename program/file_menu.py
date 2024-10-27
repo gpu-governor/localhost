@@ -125,6 +125,71 @@ class File():
         self.modified_image = cv.warpAffine(self.modified_image, rotation_matrix, (w, h))
         self.update_canvas(self.modified_image)
 
+    # Adjustment: Brightness and Contrast
+    def adjust_brightness_contrast(self, brightness=0, contrast=0):
+        if self.modified_image is None:
+            return
+        # Calculate brightness and contrast adjustments
+        adjusted_image = cv.convertScaleAbs(self.modified_image, alpha=1 + (contrast / 100), beta=brightness)
+        self.update_canvas(adjusted_image)
+
+    def apply_brightness_contrast_changes(self, brightness, contrast):
+        # Save brightness and contrast adjustments permanently to modified_image
+        self.modified_image = cv.convertScaleAbs(self.modified_image, alpha=1 + (contrast / 100), beta=brightness)
+        self.update_canvas(self.modified_image)
+
+    # Filters
+    def apply_filter(self, filter_type):
+        if self.modified_image is None:
+            return
+        
+        if filter_type == "Sepia":
+            kernel = np.array([[0.272, 0.534, 0.131],
+                               [0.349, 0.686, 0.168],
+                               [0.393, 0.769, 0.189]])
+            filtered_image = cv.transform(self.modified_image, kernel)
+            filtered_image = np.clip(filtered_image, 0, 255).astype(np.uint8)
+
+        elif filter_type == "Grayscale":
+            filtered_image = cv.cvtColor(self.modified_image, cv.COLOR_BGR2GRAY)
+            filtered_image = cv.cvtColor(filtered_image, cv.COLOR_GRAY2BGR)  # Convert back to 3 channels for consistent display
+
+        elif filter_type == "Negative":
+            filtered_image = cv.bitwise_not(self.modified_image)
+
+        elif filter_type == "Edge Detection":
+            gray = cv.cvtColor(self.modified_image, cv.COLOR_BGR2GRAY)
+            edges = cv.Canny(gray, 100, 200)
+            filtered_image = cv.cvtColor(edges, cv.COLOR_GRAY2BGR)  # Convert to 3 channels for display
+
+        else:
+            filtered_image = self.modified_image.copy()
+
+        self.update_canvas(filtered_image)
+
+    def apply_filter_changes(self, filter_type):
+        # Apply selected filter permanently
+        if filter_type == "Sepia":
+            kernel = np.array([[0.272, 0.534, 0.131],
+                               [0.349, 0.686, 0.168],
+                               [0.393, 0.769, 0.189]])
+            self.modified_image = cv.transform(self.modified_image, kernel)
+            self.modified_image = np.clip(self.modified_image, 0, 255).astype(np.uint8)
+
+        elif filter_type == "Grayscale":
+            gray = cv.cvtColor(self.modified_image, cv.COLOR_BGR2GRAY)
+            self.modified_image = cv.cvtColor(gray, cv.COLOR_GRAY2BGR)
+
+        elif filter_type == "Negative":
+            self.modified_image = cv.bitwise_not(self.modified_image)
+
+        elif filter_type == "Edge Detection":
+            gray = cv.cvtColor(self.modified_image, cv.COLOR_BGR2GRAY)
+            edges = cv.Canny(gray, 100, 200)
+            self.modified_image = cv.cvtColor(edges, cv.COLOR_GRAY2BGR)
+        
+        self.update_canvas(self.modified_image)
+
             
 def main(root, image, menubar):
     filemenu = Menu(menubar)

@@ -92,31 +92,42 @@ crop_frame.pack(pady=10, fill="x")
 
 crop_button = tk.Button(crop_frame, text="Select Crop Area")
 crop_button.pack(fill="x", pady=(0, 5))
-
 # Brightness and Contrast Controls
 adjust_frame = tk.LabelFrame(sidebar_frame, text="Adjustments", bg="lightgray", padx=10, pady=10)
 adjust_frame.pack(pady=10, fill="x")
 
 brightness_label = tk.Label(adjust_frame, text="Brightness", bg="lightgray")
 brightness_label.pack(anchor="w")
-brightness_slider = tk.Scale(adjust_frame, from_=0, to=100, orient="horizontal", bg="lightgray")
+brightness_slider = tk.Scale(adjust_frame, from_=-100, to=100, orient="horizontal", bg="lightgray")
 brightness_slider.pack(fill="x")
 
 contrast_label = tk.Label(adjust_frame, text="Contrast", bg="lightgray")
 contrast_label.pack(anchor="w")
-contrast_slider = tk.Scale(adjust_frame, from_=0, to=100, orient="horizontal", bg="lightgray")
+contrast_slider = tk.Scale(adjust_frame, from_=-100, to=100, orient="horizontal", bg="lightgray")
 contrast_slider.pack(fill="x")
 
-# Filter Drop-Down
+brightness_slider.config(command=lambda value: image.adjust_brightness_contrast(brightness=int(brightness_slider.get()), contrast=int(contrast_slider.get())))
+contrast_slider.config(command=lambda value: image.adjust_brightness_contrast(brightness=int(brightness_slider.get()), contrast=int(contrast_slider.get())))
+
+apply_adjust_button = tk.Button(adjust_frame, text="Apply Adjustments", command=lambda: image.apply_brightness_contrast_changes(int(brightness_slider.get()), int(contrast_slider.get())))
+apply_adjust_button.pack(fill="x", pady=(5, 0))
+
+# Filter Controls
 filter_frame = tk.LabelFrame(sidebar_frame, text="Filters", bg="lightgray", padx=10, pady=10)
 filter_frame.pack(pady=10, fill="x")
 
 filter_label = tk.Label(filter_frame, text="Select Filter", bg="lightgray")
 filter_label.pack(anchor="w")
-filter_var = tk.StringVar()
+filter_var = tk.StringVar(value="None")
 filter_dropdown = ttk.Combobox(filter_frame, textvariable=filter_var)
 filter_dropdown['values'] = ("None", "Sepia", "Grayscale", "Negative", "Edge Detection")
 filter_dropdown.pack(fill="x")
+
+filter_dropdown.bind("<<ComboboxSelected>>", lambda e: image.apply_filter(filter_var.get()))
+
+apply_filter_button = tk.Button(filter_frame, text="Apply Filter", command=lambda: image.apply_filter_changes(filter_var.get()))
+apply_filter_button.pack(fill="x", pady=(5, 0))
+
 
 # Apply Button
 apply_button = tk.Button(sidebar_frame, text="Apply Changes", bg="black", fg="white")
