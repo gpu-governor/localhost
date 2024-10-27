@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog, ttk
-from core import *  # This imports all functions from core.py
+from file_menu import *
 from file_menu import File
 import file_menu
 import edit_menu
