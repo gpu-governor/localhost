@@ -74,11 +74,12 @@ class File():
         self.canvas_image_id = None  # Store the image ID on the canvas
         self.filepath = None  # Track the file path for saving
 
-    def update_canvas(self):
-        if self.image is not None:
+    def update_canvas(self, modified_image=None):
+        display_image = modified_image if modified_image is not None else self.image
+        if display_image is not None:
             # Resize the image to fit the canvas dimensions
             canvas_width, canvas_height = int(self.canvas['width']), int(self.canvas['height'])
-            img_resized = cv.resize(self.image, (canvas_width, canvas_height))
+            img_resized = cv.resize(display_image, (canvas_width, canvas_height))
 
             # Convert OpenCV image (BGR) to RGB
             img_rgb = cv.cvtColor(img_resized, cv.COLOR_BGR2RGB)
@@ -92,11 +93,13 @@ class File():
                 self.canvas.delete(self.canvas_image_id)
             self.canvas_image_id = self.canvas.create_image(0, 0, anchor=NW, image=img_tk)
             self.canvas.image = img_tk  # Keep a reference to avoid garbage collection
-        else:
-            # If no image, clear any existing image and revert to checkerboard
-            if self.canvas_image_id is not None:
-                self.canvas.delete(self.canvas_image_id)
-            create_checkerboard(self.canvas, int(self.canvas['width']), int(self.canvas['height']), 20)
+
+
+    def apply_blur(self, intensity):
+        if self.image is not None:
+            # Apply Gaussian blur based on intensity
+            blurred_image = cv.GaussianBlur(self.image, (intensity * 2 + 1, intensity * 2 + 1), 0)
+            self.update_canvas(blurred_image)
 
             
 def main(root, image, menubar):

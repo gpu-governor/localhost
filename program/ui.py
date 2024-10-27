@@ -63,6 +63,9 @@ blur_frame.pack(pady=10, fill="x")
 blur_label = tk.Label(blur_frame, text="Blur Intensity", bg="lightgray")
 blur_label.pack(anchor="w")
 blur_slider = tk.Scale(blur_frame, from_=0, to=100, orient="horizontal", bg="lightgray")
+# Set up blur slider to call apply_blur with slider value
+blur_slider.config(command=lambda value: image.apply_blur(int(value)))
+
 blur_slider.pack(fill="x")
 
 # Crop Controls
