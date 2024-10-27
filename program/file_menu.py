@@ -56,11 +56,11 @@ class File():
                 cv.imwrite(self.filepath, self.image)  # Save to existing filepath
 
     def openFile(self):
-        # Open a file dialog to select an image
         filepath = filedialog.askopenfilename()
         if filepath:
             self.image = cv.imread(filepath)
-            self.update_canvas()
+            self.modified_image = self.image.copy()
+            self.update_canvas(self.modified_image)
 
     def quit(self):
         entry = askyesno(title="Quit", message="Are you sure you want to quit?")
@@ -68,51 +68,62 @@ class File():
             self.root.destroy()
 
     def __init__(self, root, canvas):
-        self.image = None  # Placeholder for the OpenCV image
+        self.image = None  # Original image
+        self.modified_image = None  # The currently modified image
         self.root = root
         self.canvas = canvas  # Reference to the main canvas widget
         self.canvas_image_id = None  # Store the image ID on the canvas
         self.filepath = None  # Track the file path for saving
+        self.current_blur_intensity = 0  # Track current blur intensity
+        self.current_rotation_angle = 0  # Track current rotation angle
 
-    def update_canvas(self, modified_image=None):
-        display_image = modified_image if modified_image is not None else self.image
-        if display_image is not None:
-            # Resize the image to fit the canvas dimensions
+
+    def update_canvas(self, display_image=None):
+        image_to_display = display_image if display_image is not None else self.modified_image
+        if image_to_display is not None:
             canvas_width, canvas_height = int(self.canvas['width']), int(self.canvas['height'])
-            img_resized = cv.resize(display_image, (canvas_width, canvas_height))
+            img_resized = cv.resize(image_to_display, (canvas_width, canvas_height))
 
-            # Convert OpenCV image (BGR) to RGB
             img_rgb = cv.cvtColor(img_resized, cv.COLOR_BGR2RGB)
-
-            # Encode the RGB image as a PPM image to create a PhotoImage
             img_ppm = cv.imencode(".ppm", img_rgb)[1].tobytes()
             img_tk = PhotoImage(data=img_ppm)
 
-            # Clear any previous image on the canvas and display the new one
             if self.canvas_image_id is not None:
                 self.canvas.delete(self.canvas_image_id)
             self.canvas_image_id = self.canvas.create_image(0, 0, anchor=NW, image=img_tk)
-            self.canvas.image = img_tk  # Keep a reference to avoid garbage collection
-#================Effects=============
-
+            self.canvas.image = img_tk
+            
     def apply_blur(self, intensity):
-        if self.image is not None:
-            # Apply Gaussian blur based on intensity
-            blurred_image = cv.GaussianBlur(self.image, (intensity * 2 + 1, intensity * 2 + 1), 0)
-            self.update_canvas(blurred_image)
+        if self.modified_image is None:
+            return
+        # Reset to modified image and apply blur
+        blurred_image = cv.GaussianBlur(self.modified_image, (intensity * 2 + 1, intensity * 2 + 1), 0)
+        self.update_canvas(blurred_image)
+        
+    def apply_blur_changes(self, intensity):
+        # Save changes permanently to modified image
+        self.current_blur_intensity = intensity
+        self.modified_image = cv.GaussianBlur(self.modified_image, (intensity * 2 + 1, intensity * 2 + 1), 0)
+        self.update_canvas(self.modified_image)
 
     def rotate_image(self, angle):
-        if self.image is not None:
-            # Get the center of the image to rotate around
-            (h, w) = self.image.shape[:2]
-            center = (w // 2, h // 2)
+        if self.modified_image is None:
+            return
+        # Reset to modified image and apply rotation
+        (h, w) = self.modified_image.shape[:2]
+        center = (w // 2, h // 2)
+        rotation_matrix = cv.getRotationMatrix2D(center, angle, 1.0)
+        rotated_image = cv.warpAffine(self.modified_image, rotation_matrix, (w, h))
+        self.update_canvas(rotated_image)
 
-            # Create the rotation matrix and apply rotation
-            rotation_matrix = cv.getRotationMatrix2D(center, angle, 1.0)
-            rotated_image = cv.warpAffine(self.image, rotation_matrix, (w, h))
-
-            # Update the canvas with the rotated image
-            self.update_canvas(rotated_image)
+    def apply_rotation_changes(self, angle):
+        # Save changes permanently to modified image
+        self.current_rotation_angle = angle
+        (h, w) = self.modified_image.shape[:2]
+        center = (w // 2, h // 2)
+        rotation_matrix = cv.getRotationMatrix2D(center, angle, 1.0)
+        self.modified_image = cv.warpAffine(self.modified_image, rotation_matrix, (w, h))
+        self.update_canvas(self.modified_image)
 
             
 def main(root, image, menubar):

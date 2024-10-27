@@ -57,23 +57,20 @@ label.pack(pady=10)
 
 # ============================ Sidebar Widgets ============================
 # Blur Controls
+
+# Blur Controls
 blur_frame = tk.LabelFrame(sidebar_frame, text="Blur", bg="lightgray", padx=10, pady=10)
 blur_frame.pack(pady=10, fill="x")
 
 blur_label = tk.Label(blur_frame, text="Blur Intensity", bg="lightgray")
 blur_label.pack(anchor="w")
 blur_slider = tk.Scale(blur_frame, from_=0, to=100, orient="horizontal", bg="lightgray")
-# Set up blur slider to call apply_blur with slider value
 blur_slider.config(command=lambda value: image.apply_blur(int(value)))
-
 blur_slider.pack(fill="x")
 
-# Crop Controls
-crop_frame = tk.LabelFrame(sidebar_frame, text="Crop", bg="lightgray", padx=10, pady=10)
-crop_frame.pack(pady=10, fill="x")
-
-crop_button = tk.Button(crop_frame, text="Select Crop Area")
-crop_button.pack(fill="x", pady=(0, 5))
+# Add Apply button for blur
+apply_blur_button = tk.Button(blur_frame, text="Apply Blur", command=lambda: image.apply_blur_changes(blur_slider.get()))
+apply_blur_button.pack(fill="x", pady=(5, 0))
 
 # Rotate Controls
 rotate_frame = tk.LabelFrame(sidebar_frame, text="Rotate", bg="lightgray", padx=10, pady=10)
@@ -82,10 +79,19 @@ rotate_frame.pack(pady=10, fill="x")
 rotate_label = tk.Label(rotate_frame, text="Rotation Angle", bg="lightgray")
 rotate_label.pack(anchor="w")
 rotate_slider = tk.Scale(rotate_frame, from_=0, to=360, orient="horizontal", bg="lightgray")
-rotate_slider.pack(fill="x")
-# In the Rotate Controls section
 rotate_slider.config(command=lambda value: image.rotate_image(int(value)))
+rotate_slider.pack(fill="x")
 
+# Add Apply button for rotate
+apply_rotate_button = tk.Button(rotate_frame, text="Apply Rotation", command=lambda: image.apply_rotation_changes(rotate_slider.get()))
+apply_rotate_button.pack(fill="x", pady=(5, 0))
+
+# Crop Controls
+crop_frame = tk.LabelFrame(sidebar_frame, text="Crop", bg="lightgray", padx=10, pady=10)
+crop_frame.pack(pady=10, fill="x")
+
+crop_button = tk.Button(crop_frame, text="Select Crop Area")
+crop_button.pack(fill="x", pady=(0, 5))
 
 # Brightness and Contrast Controls
 adjust_frame = tk.LabelFrame(sidebar_frame, text="Adjustments", bg="lightgray", padx=10, pady=10)
