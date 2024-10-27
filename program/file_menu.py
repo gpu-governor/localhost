@@ -93,13 +93,26 @@ class File():
                 self.canvas.delete(self.canvas_image_id)
             self.canvas_image_id = self.canvas.create_image(0, 0, anchor=NW, image=img_tk)
             self.canvas.image = img_tk  # Keep a reference to avoid garbage collection
-
+#================Effects=============
 
     def apply_blur(self, intensity):
         if self.image is not None:
             # Apply Gaussian blur based on intensity
             blurred_image = cv.GaussianBlur(self.image, (intensity * 2 + 1, intensity * 2 + 1), 0)
             self.update_canvas(blurred_image)
+
+    def rotate_image(self, angle):
+        if self.image is not None:
+            # Get the center of the image to rotate around
+            (h, w) = self.image.shape[:2]
+            center = (w // 2, h // 2)
+
+            # Create the rotation matrix and apply rotation
+            rotation_matrix = cv.getRotationMatrix2D(center, angle, 1.0)
+            rotated_image = cv.warpAffine(self.image, rotation_matrix, (w, h))
+
+            # Update the canvas with the rotated image
+            self.update_canvas(rotated_image)
 
             
 def main(root, image, menubar):

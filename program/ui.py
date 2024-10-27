@@ -83,6 +83,9 @@ rotate_label = tk.Label(rotate_frame, text="Rotation Angle", bg="lightgray")
 rotate_label.pack(anchor="w")
 rotate_slider = tk.Scale(rotate_frame, from_=0, to=360, orient="horizontal", bg="lightgray")
 rotate_slider.pack(fill="x")
+# In the Rotate Controls section
+rotate_slider.config(command=lambda value: image.rotate_image(int(value)))
+
 
 # Brightness and Contrast Controls
 adjust_frame = tk.LabelFrame(sidebar_frame, text="Adjustments", bg="lightgray", padx=10, pady=10)
