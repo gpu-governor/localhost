@@ -36,9 +36,19 @@ def create_checkerboard(canvas, width, height, square_size):
 class File():
 
     def newFile(self):
-        # Placeholder function for "New" file action
+        # Clear the current image
         self.image = None
-        self.update_canvas()
+        self.modified_image = None
+        self.filepath = None
+
+        # Clear the canvas and recreate the checkerboard pattern
+        self.canvas.delete("all")  # Remove any current content
+        canvas_width, canvas_height = int(self.canvas['width']), int(self.canvas['height'])
+        create_checkerboard(self.canvas, canvas_width, canvas_height, 20)  # Recreate checkerboard
+
+        # Reset the canvas image ID
+        self.canvas_image_id = None
+
         
     def saveAs(self):
         # Prompt for a new file path and save the image
