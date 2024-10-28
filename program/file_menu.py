@@ -41,14 +41,17 @@ class File():
         self.modified_image = None
         self.filepath = None
 
+        # Reset canvas size to initial dimensions
+        initial_width, initial_height = 500, 400  # Set initial dimensions here
+        self.canvas.config(width=initial_width, height=initial_height)
+        
         # Clear the canvas and recreate the checkerboard pattern
-        self.canvas.delete("all")  # Remove any current content
-        canvas_width, canvas_height = int(self.canvas['width']), int(self.canvas['height'])
-        create_checkerboard(self.canvas, canvas_width, canvas_height, 20)  # Recreate checkerboard
+        self.canvas.delete("all")
+        create_checkerboard(self.canvas, initial_width, initial_height, 20)  # Checkerboard
 
         # Reset the canvas image ID
         self.canvas_image_id = None
-
+        
     def saveAs(self):
         # Prompt for a new file path and save the modified image if available
         if self.modified_image is not None:
@@ -80,6 +83,12 @@ class File():
         if filepath:
             self.image = cv.imread(filepath)
             self.modified_image = self.image.copy()
+            
+            # Resize canvas to match the image's dimensions
+            img_height, img_width = self.image.shape[:2]
+            self.canvas.config(width=img_width, height=img_height)
+
+            # Update canvas with the loaded image
             self.update_canvas(self.modified_image)
 
     def quit(self):
@@ -99,11 +108,14 @@ class File():
 
 
     def update_canvas(self, display_image=None):
+        # Same as before, but image resizes to fit the canvas
         image_to_display = display_image if display_image is not None else self.modified_image
         if image_to_display is not None:
+            # Get current canvas dimensions
             canvas_width, canvas_height = int(self.canvas['width']), int(self.canvas['height'])
+            
+            # Resize image to fit the current canvas size
             img_resized = cv.resize(image_to_display, (canvas_width, canvas_height))
-
             img_rgb = cv.cvtColor(img_resized, cv.COLOR_BGR2RGB)
             img_ppm = cv.imencode(".ppm", img_rgb)[1].tobytes()
             img_tk = PhotoImage(data=img_ppm)
@@ -112,6 +124,8 @@ class File():
                 self.canvas.delete(self.canvas_image_id)
             self.canvas_image_id = self.canvas.create_image(0, 0, anchor=NW, image=img_tk)
             self.canvas.image = img_tk
+
+
             
     def apply_blur(self, intensity):
         if self.modified_image is None:
