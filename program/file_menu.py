@@ -49,21 +49,31 @@ class File():
         # Reset the canvas image ID
         self.canvas_image_id = None
 
-        
     def saveAs(self):
-        # Prompt for a new file path and save the image
-        if self.image is not None:
+        # Prompt for a new file path and save the modified image if available
+        if self.modified_image is not None:
+            self.filepath = filedialog.asksaveasfilename(defaultextension=".jpg")
+            if self.filepath:
+                cv.imwrite(self.filepath, self.modified_image)
+        elif self.image is not None:
             self.filepath = filedialog.asksaveasfilename(defaultextension=".jpg")
             if self.filepath:
                 cv.imwrite(self.filepath, self.image)
-                
+
     def saveFile(self):
         # Save to the last used filepath, or prompt if it's the first save
-        if self.image is not None:
+        if self.modified_image is not None:
             if self.filepath is None:
                 self.saveAs()  # Prompt for a file path if one isn't set
             else:
-                cv.imwrite(self.filepath, self.image)  # Save to existing filepath
+                cv.imwrite(self.filepath, self.modified_image)  # Save modified image to existing filepath
+        elif self.image is not None:
+            if self.filepath is None:
+                self.saveAs()
+            else:
+                cv.imwrite(self.filepath, self.image)
+            
+
 
     def openFile(self):
         filepath = filedialog.askopenfilename()
