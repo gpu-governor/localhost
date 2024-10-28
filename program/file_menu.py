@@ -190,6 +190,82 @@ class File():
         
         self.update_canvas(self.modified_image)
 
+    def open_crop_window(self):
+        if self.image is None:
+            showerror("Error", "No image loaded to crop.")
+            return
+
+        # Create a new window for cropping
+        self.crop_window = Toplevel(self.root)
+        self.crop_window.title("Crop Image")
+        self.crop_window.geometry("600x550")
+
+        # Instruction label
+        instruction_label = Label(self.crop_window, text="Use the mouse to select the crop area. Left-click and drag to draw.", font=("Arial", 10))
+        instruction_label.pack(pady=5)
+
+        # Set up variables for drawing the rectangle
+        self.crop_start_x = self.crop_start_y = None
+        self.crop_rect = None
+
+        # Resize image to fit the crop window
+        img_resized = cv.resize(self.image, (600, 400))
+        img_rgb = cv.cvtColor(img_resized, cv.COLOR_BGR2RGB)
+        img_ppm = cv.imencode(".ppm", img_rgb)[1].tobytes()
+        self.crop_image_tk = PhotoImage(data=img_ppm)
+
+        # Set up canvas in the crop window
+        self.crop_canvas = Canvas(self.crop_window, width=600, height=400)
+        self.crop_canvas.pack()
+        self.crop_canvas.create_image(0, 0, anchor=NW, image=self.crop_image_tk)
+
+        # Bind mouse events for drawing rectangle
+        self.crop_canvas.bind("<Button-1>", self.start_crop)
+        self.crop_canvas.bind("<B1-Motion>", self.draw_crop_rectangle)
+
+        # Add "Apply Crop" and "Cancel" buttons
+        button_frame = Frame(self.crop_window)
+        button_frame.pack(pady=10)
+
+        apply_button = Button(button_frame, text="Apply Crop", command=self.apply_crop)
+        apply_button.grid(row=0, column=0, padx=10)
+
+        cancel_button = Button(button_frame, text="Cancel", command=self.crop_window.destroy)
+        cancel_button.grid(row=0, column=1, padx=10)
+
+    def start_crop(self, event):
+        # Record the start position for cropping
+        self.crop_start_x, self.crop_start_y = event.x, event.y
+        if self.crop_rect:
+            self.crop_canvas.delete(self.crop_rect)
+            self.crop_rect = None
+
+    def draw_crop_rectangle(self, event):
+        # Draw a rectangle on the crop canvas as the user drags the mouse
+        if self.crop_rect:
+            self.crop_canvas.delete(self.crop_rect)
+        self.crop_rect = self.crop_canvas.create_rectangle(
+            self.crop_start_x, self.crop_start_y, event.x, event.y,
+            outline="blue", width=2, stipple="gray25"
+        )
+
+    def apply_crop(self):
+        if self.crop_start_x is not None and self.crop_start_y is not None and self.crop_rect:
+            # Calculate the crop area
+            x0, y0 = min(self.crop_start_x, self.crop_canvas.winfo_pointerx() - self.crop_canvas.winfo_rootx()), min(self.crop_start_y, self.crop_canvas.winfo_pointery() - self.crop_canvas.winfo_rooty())
+            x1, y1 = max(self.crop_start_x, self.crop_canvas.winfo_pointerx() - self.crop_canvas.winfo_rootx()), max(self.crop_start_y, self.crop_canvas.winfo_pointery() - self.crop_canvas.winfo_rooty())
+
+            # Map coordinates to original image size
+            img_width, img_height = self.image.shape[1], self.image.shape[0]
+            x0 = int(x0 * img_width / 600)
+            x1 = int(x1 * img_width / 600)
+            y0 = int(y0 * img_height / 400)
+            y1 = int(y1 * img_height / 400)
+
+            # Apply the crop and update the main canvas
+            self.image = self.image[y0:y1, x0:x1]
+            self.update_canvas()
+            self.crop_window.destroy()
             
 def main(root, image, menubar):
     filemenu = Menu(menubar)

@@ -86,12 +86,8 @@ rotate_slider.pack(fill="x")
 apply_rotate_button = tk.Button(rotate_frame, text="Apply Rotation", command=lambda: image.apply_rotation_changes(rotate_slider.get()))
 apply_rotate_button.pack(fill="x", pady=(5, 0))
 
-# Crop Controls
-crop_frame = tk.LabelFrame(sidebar_frame, text="Crop", bg="lightgray", padx=10, pady=10)
-crop_frame.pack(pady=10, fill="x")
 
-crop_button = tk.Button(crop_frame, text="Select Crop Area")
-crop_button.pack(fill="x", pady=(0, 5))
+
 # Brightness and Contrast Controls
 adjust_frame = tk.LabelFrame(sidebar_frame, text="Adjustments", bg="lightgray", padx=10, pady=10)
 adjust_frame.pack(pady=10, fill="x")
@@ -127,6 +123,14 @@ filter_dropdown.bind("<<ComboboxSelected>>", lambda e: image.apply_filter(filter
 
 apply_filter_button = tk.Button(filter_frame, text="Apply Filter", command=lambda: image.apply_filter_changes(filter_var.get()))
 apply_filter_button.pack(fill="x", pady=(5, 0))
+
+# Crop Controls
+crop_frame = tk.LabelFrame(sidebar_frame, text="Crop", bg="lightgray", padx=10, pady=10)
+crop_frame.pack(pady=10, fill="x")
+crop_button = tk.Button(crop_frame, text="Select Crop Area")
+crop_button.config(command=image.open_crop_window)
+
+crop_button.pack(fill="x", pady=(0, 5))
 
 
 # Apply Button
