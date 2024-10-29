@@ -5,6 +5,8 @@ from tkinter import filedialog  # Import filedialog explicitly
 import sys
 import cv2 as cv
 import numpy as np
+from PIL import Image, ImageTk
+
 
 # ============================ window update ============================
 
@@ -108,22 +110,27 @@ class File():
 
 
     def update_canvas(self, display_image=None):
-        # Same as before, but image resizes to fit the canvas
+        # Use the current modified image or provided display image
         image_to_display = display_image if display_image is not None else self.modified_image
         if image_to_display is not None:
-            # Get current canvas dimensions
+            # Get canvas dimensions
             canvas_width, canvas_height = int(self.canvas['width']), int(self.canvas['height'])
             
-            # Resize image to fit the current canvas size
+            # Resize image to fit the canvas
             img_resized = cv.resize(image_to_display, (canvas_width, canvas_height))
+            
+            # Convert image from BGR to RGB and then to PIL format
             img_rgb = cv.cvtColor(img_resized, cv.COLOR_BGR2RGB)
-            img_ppm = cv.imencode(".ppm", img_rgb)[1].tobytes()
-            img_tk = PhotoImage(data=img_ppm)
+            img_pil = Image.fromarray(img_rgb)
+            
+            # Convert PIL image to Tkinter format
+            img_tk = ImageTk.PhotoImage(image=img_pil)
 
+            # Update canvas with the new image
             if self.canvas_image_id is not None:
                 self.canvas.delete(self.canvas_image_id)
             self.canvas_image_id = self.canvas.create_image(0, 0, anchor=NW, image=img_tk)
-            self.canvas.image = img_tk
+            self.canvas.image = img_tk  # Prevent garbage collection of the image
 
 
             
