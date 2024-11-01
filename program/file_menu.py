@@ -322,4 +322,4 @@ def main(root, image, menubar):
 #=========
 
 if __name__ == "__main__":
-    print("Please run 'main.py'")
+    print("Please run ui.py'")
